@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zinsvertrag & Treffen-Manager PRO</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --primary-light: #334155;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Tabs System */
+        .tabs-container {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 20px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .tab {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: #e2e8f0;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-right: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .tab.active {
+            background: var(--card-bg);
+            color: var(--accent);
+            border-bottom: 2px solid var(--card-bg);
+            margin-bottom: -2px;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+        }
+
+        .tab .close-tab {
+            margin-left: 10px;
+            color: var(--danger);
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .tab .close-tab:hover {
+            background-color: #fee2e2;
+        }
+
+        .add-tab-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: background 0.2s;
+        }
+
+        .add-tab-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Contract Content */
+        .contract-content {
+            display: none;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .contract-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Top Actions Bar */
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        .status-offen {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-bezahlt {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #15803d; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { background: #b91c1c; }
+
+        /* Written Legal Contract Text Block */
+        .legal-text-box {
+            background-color: #f8fafc;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 25px;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .legal-text-box h2 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .legal-text-box p {
+            margin-bottom: 10px;
+        }
+
+        .legal-highlight-span {
+            font-weight: 600;
+            color: var(--text);
+            border-bottom: 1px dotted var(--text-muted);
+            padding: 0 2px;
+        }
+        
+        .legal-static-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            background: #fff;
+        }
+        
+        .legal-static-table th, .legal-static-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px;
+            text-align: right;
+        }
+        
+        .legal-static-table th {
+            background-color: #f1f5f9;
+            color: #334155;
+            text-align: center;
+        }
+        .legal-static-table td:first-child, .legal-static-table th:first-child { text-align: left; }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent);
+        }
+
+        /* Input group with location button */
+        .input-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        .location-btn {
+            background: #f1f5f9;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0 12px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .location-btn:hover {
+            background: #e2e8f0;
+            border-color: var(--text-muted);
+        }
+
+        /* Signatures Section */
+        .signature-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .signature-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .signature-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .signature-canvas-wrapper {
+            background: white;
+            border: 1px dashed var(--text-muted);
+            border-radius: 6px;
+            position: relative;
+            width: 100%;
+            height: 120px;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .clear-sig-btn {
+            margin-top: 5px;
+            font-size: 11px;
+            color: var(--danger);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Table Styling */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 10px;
+            font-weight: 600;
+        }
+
+        th:first-child { border-top-left-radius: 6px; }
+        th:last-child { border-top-right-radius: 6px; }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .table-date-input, .table-payment-input {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+        }
+        
+        .table-payment-input {
+            width: 100px;
+            text-align: right;
+        }
+
+        .table-date-input:focus, .table-payment-input:focus {
+            border-color: var(--accent);
+        }
+        
+        .table-payment-input:disabled {
+            background-color: #f1f5f9;
+            cursor: not-allowed;
+            color: #94a3b8;
+        }
+
+        .wochentag-cell {
+            font-weight: 600;
+            color: var(--primary-light);
+        }
+
+        .zins-badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .zins-0 { background: #e2e8f0; color: #475569; }
+        .zins-low { background: #e0f2fe; color: #0369a1; }
+        .zins-med { background: #fef3c7; color: #b45309; }
+        .zins-high { background: #fee2e2; color: #b91c1c; }
+
+        .total-highlight {
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 15px;
+        }
+
+        .strike-through {
+            text-decoration: line-through;
+            opacity: 0.45;
+            color: var(--text-muted);
+        }
+        
+        .btn-delete-row {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-delete-row:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .empty-notice {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Summary Box (Blauer Streifen) */
+        .summary-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+            box-shadow: 0 -4px 15px rgba(37, 99, 235, 0.1);
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .summary-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .summary-value.total-due {
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Zinsvertrag & Live-Treffen Manager PRO</h1>
+        <p>Verwalte mehrere Verträge interaktiv. Zinsen und Teilzahlungen werden automatisch miteinander verrechnet.</p>
+    </header>
+
+    <!-- Tabs Bar -->
+    <div class="tabs-container" id="tabsBar">
+        <!-- Tabs will be rendered here dynamically -->
+        <button class="add-tab-btn" onclick="createNewContract()">+ Neuer Vertrag</button>
+    </div>
+
+    <!-- Main Workspace Container -->
+    <div id="contractsContainer">
+        <!-- Active contract view will be rendered here -->
+    </div>
+
+    <div id="emptyNotice" class="empty-notice" style="display: none;">
+        <h3>Keine Verträge aktiv</h3>
+        <p style="margin-top: 10px;">Klicke auf "+ Neuer Vertrag", um einen neuen interaktiven Zinsvertrag anzulegen.</p>
+    </div>
+
+    <script>
+        let contracts = [];
+        let activeContractId = null;
+
+        const ZINS_STUFEN = [
+            { stufe: 0, prozent: 0 },   // Treffen 1
+            { stufe: 1, prozent: 10 },  // Treffen 2
+            { stufe: 2, prozent: 20 },  // Treffen 3
+            { stufe: 3, prozent: 20 },  // Treffen 4
+            { stufe: 4, prozent: 50 },  // Treffen 5
+            { stufe: 5, prozent: 100 }, // Treffen 6
+            { stufe: 6, prozent: 200 }  // Treffen 7
+        ];
+
+        const WOCHENTAGE = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromLocalStorage();
+            if (contracts.length === 0) {
+                createSampleContract();
+            }
+            renderTabs();
+            switchTab(contracts[0].id);
+        });
+
+        function createSampleContract() {
+            const id = 'c_sample_' + Date.now();
+            const sampleContract = {
+                id: id,
+                title: `Beispiel-Vertrag`,
+                lender: 'Max Mustermann',
+                borrower: 'Sabine Geber',
+                amount: 500,
+                location: 'Berlin',
+                startDate: '2026-07-01',
+                status: 'Offen',
+                signatures: { lender: null, borrower: null },
+                meetings: [
+                    { nr: 1, date: '2026-07-01', weekday: 'Mittwoch', percent: 0, interest: 0, payment: 0, total: 500 },
+                    { nr: 2, date: '', weekday: '', percent: 10, interest: 0, payment: 0, total: 500 }
+                ]
+            };
+            contracts.push(sampleContract);
+            saveToLocalStorage();
+        }
+
+        function createNewContract() {
+            const id = 'c_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            const newContract = {
+                id: id,
+                title: `Vertrag ${contracts.length + 1}`,
+                lender: '',
+                borrower: '',
+                amount: 0,
+                location: '',
+                startDate: '',
+                status: 'Offen',
+                signatures: { lender: null, borrower: null },
+                meetings: [
+                    { nr: 1, date: '', weekday: '', percent: 0, interest: 0, payment: 0, total: 0 }
+                ]
+            };
+
+            contracts.push(newContract);
+            saveToLocalStorage();
+            renderTabs();
+            switchTab(id);
+        }
+
+        function renderTabs() {
+            const tabsBar = document.getElementById('tabsBar');
+            const existingTabs = tabsBar.querySelectorAll('.tab');
+            existingTabs.forEach(t => t.remove());
+
+            const addBtn = tabsBar.querySelector('.add-tab-btn');
+
+            contracts.forEach((contract) => {
+                const tabEl = document.createElement('div');
+                tabEl.className = `tab ${contract.id === activeContractId ? 'active' : ''}`;
+                tabEl.setAttribute('onclick', `switchTab('${contract.id}')`);
+                
+                const displayTitle = contract.borrower ? `Vertrag (${contract.borrower})` : contract.title;
+                
+                tabEl.innerHTML = `
+                    <span>${displayTitle}</span>
+                    <span class="close-tab" onclick="deleteContract('${contract.id}', event)">×</span>
+                `;
+                tabsBar.insertBefore(tabEl, addBtn);
+            });
+
+            if (contracts.length === 0) {
+                document.getElementById('emptyNotice').style.display = 'block';
+                document.getElementById('contractsContainer').innerHTML = '';
+            } else {
+                document.getElementById('emptyNotice').style.display = 'none';
+            }
+        }
+
+        function switchTab(id) {
+            saveCurrentSignatures();
+            activeContractId = id;
+            renderTabs();
+            renderContractWorkspace();
+        }
+
+        function deleteContract(id, event) {
+            event.stopPropagation();
+            if (!confirm("Möchtest du diesen Zinsvertrag wirklich unwiderruflich löschen?")) return;
+
+            contracts = contracts.filter(c => c.id !== id);
+            saveToLocalStorage();
+
+            if (activeContractId === id) {
+                activeContractId = contracts.length > 0 ? contracts[0].id : null;
+            }
+
+            renderTabs();
+            if (activeContractId) {
+                renderContractWorkspace();
+            }
+        }
+
+        function toggleStatus(id) {
+            const contract = contracts.find(c => c.id === id);
+            if (contract) {
+                contract.status = contract.status === 'Offen' ? 'Bezahlt' : 'Offen';
+                saveToLocalStorage();
+                renderContractWorkspace();
+            }
+        }
+
+        function saveCurrentSignatures() {
+            if (!activeContractId) return;
+            const contract = contracts.find(c => c.id === activeContractId);
+            if (!contract) return;
+
+            const canvasLender = document.getElementById(`canvas-lender-${activeContractId}`);
+            const canvasBorrower = document.getElementById(`canvas-borrower-${activeContractId}`);
+
+            if (canvasLender && canvasBorrower) {
+                if (canvasLender.getAttribute('data-blank') === 'false') {
+                    contract.signatures.lender = canvasLender.toDataURL();
+                }
+                if (canvasBorrower.getAttribute('data-blank') === 'false') {
+                    contract.signatures.borrower = canvasBorrower.toDataURL();
+                }
+            }
+        }
+
+        function fetchLiveLocation(id) {
+            const btn = document.getElementById(`location-btn-${id}`);
+            const input = document.getElementById(`location-input-${id}`);
+            
+            if (!navigator.geolocation) {
+                alert("Dein Browser unterstützt Geolocation leider nicht.");
+                return;
+            }
+
+            btn.innerText = "⏳ Ortung...";
+            btn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    try {
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`);
+                        const data = await response.json();
+                        const city = data.address.city || data.address.town || data.address.village || data.address.county || "Standort ermittelt";
+                        
+                        input.value = city;
+                        updateContractField(id, 'location', city);
+                    } catch (e) {
+                        const fallbackCoords = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                        input.value = fallbackCoords;
+                        updateContractField(id, 'location', fallbackCoords);
+                    }
+                    btn.innerText = "📍 Standort";
+                    btn.disabled = false;
+                },
+                (error) => {
+                    alert("Standortzugriff verweigert oder fehlgeschlagen. Bitte Berechtigung prüfen.");
+                    btn.innerText = "📍 Standort";
+                    btn.disabled = false;
+                },
+                { timeout: 6000 }
+            );
+        }
+
+        function renderContractWorkspace() {
+            const container = document.getElementById('contractsContainer');
+            const contract = contracts.find(c => c.id === activeContractId);
+
+            if (!contract) {
+                container.innerHTML = '';
+                return;
+            }
+
+            recalculateContract(contract);
+
+            const statusClass = contract.status === 'Offen' ? 'status-offen' : 'status-bezahlt';
+            
+            let rowsHtml = '';
+            contract.meetings.forEach((m, idx) => {
+                let zinsClass = 'zins-0';
+                if (m.percent > 0 && m.percent <= 20) zinsClass = 'zins-low';
+                else if (m.percent > 20 && m.percent <= 99) zinsClass = 'zins-med';
+                else if (m.percent >= 100) zinsClass = 'zins-high';
+
+                const isUnfilled = !m.date;
+                const cellClass = isUnfilled ? 'class="strike-through"' : '';
+
+                rowsHtml += `
+                    <tr>
+                        <td><strong>${m.nr}</strong></td>
+                        <td>
+                            <input type="date" class="table-date-input" 
+                                   id="date-${contract.id}-${idx}" 
+                                   value="${m.date}" 
+                                   onchange="updateMeetingDate('${contract.id}', ${idx}, this.value)">
+                        </td>
+                        <td class="wochentag-cell">${m.weekday || '-'}</td>
+                        <td><span class="zins-badge ${zinsClass}">${m.percent}%</span></td>
+                        <td ${cellClass}>${formatCurrency(m.interest)}</td>
+                        <td>
+                            <input type="number" class="table-payment-input" 
+                                   value="${m.payment || 0}" step="0.01" min="0" 
+                                   ${isUnfilled ? 'disabled' : ''}
+                                   oninput="updateMeetingPayment('${contract.id}', ${idx}, this.value)">
+                        </td>
+                        <td class="total-highlight ${isUnfilled ? 'strike-through' : ''}">${formatCurrency(m.total)}</td>
+                        <td>
+                            <button class="btn-delete-row" onclick="deleteMeeting('${contract.id}', ${idx})" title="Eintrag löschen">✕</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="contract-content active">
+                    <!-- Top Actions Bar -->
+                    <div class="actions-bar">
+                        <div>
+                            <span class="status-badge ${statusClass}">Status: ${contract.status}</span>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-success" onclick="toggleStatus('${contract.id}')">
+                                ${contract.status === 'Offen' ? '✓ Als Bezahlt markieren' : '⟲ Als Offen markieren'}
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteContract('${contract.id}', event)">✕ Vertrag löschen</button>
+                        </div>
+                    </div>
+
+                    <!-- Written Legal Contract Text Block -->
+                    <div class="legal-text-box">
+                        <h2>Schriftlicher Darlehensvertrag (Zinsvereinbarung)</h2>
+                        <p>Zwischen dem Darlehensgeber <span class="legal-highlight-span" id="legal-lender-${contract.id}">${contract.lender || '____________________'}</span> </p>
+                        <p>und dem Darlehensnehmer <span class="legal-highlight-span" id="legal-borrower-${contract.id}">${contract.borrower || '____________________'}</span> wird folgender rechtsgültiger Vertrag geschlossen:</p>
+                        
+                        <p><strong>§ 1 Darlehensgegenstand & Summe</strong><br>
+                        Der Darlehensgeber gewährt dem Darlehensnehmer ein zinsabhängiges Darlehen in Höhe von einer Kapitalsumme von 
+                        <span class="legal-highlight-span" id="legal-amount-${contract.id}">${contract.amount ? formatCurrency(contract.amount) : '0,00 €'}</span>.</p>
+                        
+                        <p><strong>§ 2 Variable Zinsklausel & Live-Treffen</strong><br>
+                        Die Parteien vereinbaren ausdrücklich eine treffensabhängige Zinsstaffelung. Die Zinsen berechnen sich prozentual vom jeweils aktuellen Basis-Darlehensbetrag und werden ausschließlich fällig, wenn ein persönliches Live-Treffen stattfindet und im nachfolgenden Protokoll mit Datum fixiert wird. Die Zinsstufen sind wie folgt festgelegt:</p>
+                        
+                        <!-- NEW: Statische Veranschaulichung der Zinsstufen -->
+                        <table class="legal-static-table" style="width: auto; min-width: 300px; margin-left: 0;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left;">Treffen</th>
+                                    <th style="text-align: right;">Zinssatz</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1. Treffen (Start)</td><td>0 %</td></tr>
+                                <tr><td>2. Treffen</td><td>10 %</td></tr>
+                                <tr><td>3. Treffen</td><td>20 %</td></tr>
+                                <tr><td>4. Treffen</td><td>20 %</td></tr>
+                                <tr><td>5. Treffen</td><td>50 %</td></tr>
+                                <tr><td>6. Treffen</td><td>100 %</td></tr>
+                                <tr><td>Ab dem 7. Treffen</td><td>200 %</td></tr>
+                            </tbody>
+                        </table>
+                        
+                        <p>Solange kein Treffen dokumentiert ist, fallen für die jeweilige Stufe keine Zinsen an.</p>
+                        
+                        <p><strong>§ 3 Zins- und Tilgungsplan</strong><br>
+                        Das Darlehen nebst den kumulierten, durch Live-Treffen aktivierten Zinsbeträgen ist flexibel zurückzuzahlen. Eingehende Teilzahlungen tilgen gemäß § 367 BGB zunächst die fälligen Zinsen und reduzieren danach den Basisbetrag. Die weitere Zinsberechnung erfolgt auf Grundlage des neuen, reduzierten Basisbetrags. Die nachfolgende Tabelle dokumentiert den exakten Verlauf:</p>
+                        
+                        <table class="legal-static-table" id="legal-table-${contract.id}">
+                            <thead>
+                                <tr>
+                                    <th>Treffen</th>
+                                    <th>Datum</th>
+                                    <th>Zinszuwachs</th>
+                                    <th>Teilzahlung</th>
+                                    <th>Offene Zinsen</th>
+                                    <th>Neuer Basisbetrag</th>
+                                    <th>Gesamtschuld</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Wird per JavaScript live befüllt -->
+                            </tbody>
+                        </table>
+
+                        <p><strong>§ 4 Fälligkeit & Inkrafttreten</strong><br>
+                        Sobald die vollständige Summe beglichen ist, wird dieser Vertrag einvernehmlich auf den Status „Bezahlt“ gesetzt. Dieser Vertrag wird rechtswirksam vereinbart für den Erfüllungsort <span class="legal-highlight-span" id="legal-location-${contract.id}">${contract.location || '____________________'}</span> und tritt am <span class="legal-highlight-span" id="legal-date-${contract.id}">${contract.startDate ? formatDateDE(contract.startDate) : '_________'}</span> in Kraft.</p>
+                    </div>
+
+                    <!-- Contract Form Inputs -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Start-Darlehensbetrag (€)</label>
+                            <input type="number" step="any" min="0" value="${contract.amount || ''}" placeholder="z.B. 500" 
+                                   oninput="updateContractField('${contract.id}', 'amount', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Darlehensgeber (Name)</label>
+                            <input type="text" value="${contract.lender || ''}" placeholder="Name Geber" 
+                                   oninput="updateContractField('${contract.id}', 'lender', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Darlehensnehmer (Name)</label>
+                            <input type="text" value="${contract.borrower || ''}" placeholder="Name Nehmer" 
+                                   oninput="updateContractField('${contract.id}', 'borrower', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Ort</label>
+                            <div class="input-group">
+                                <input type="text" id="location-input-${contract.id}" value="${contract.location || ''}" placeholder="z.B. Berlin" style="flex: 1;"
+                                       oninput="updateContractField('${contract.id}', 'location', this.value)">
+                                <button type="button" id="location-btn-${contract.id}" class="location-btn" onclick="fetchLiveLocation('${contract.id}')">
+                                    📍 Standort
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Startdatum</label>
+                            <input type="date" value="${contract.startDate || ''}" 
+                                   onchange="updateContractField('${contract.id}', 'startDate', this.value)">
+                        </div>
+                    </div>
+
+                    <!-- Digital Signatures Panel -->
+                    <div class="signature-section">
+                        <div class="signature-box">
+                            <div class="signature-title">Unterschrift Darlehensgeber</div>
+                            <div class="signature-canvas-wrapper">
+                                <canvas id="canvas-lender-${contract.id}" data-blank="true"></canvas>
+                            </div>
+                            <button class="clear-sig-btn" onclick="clearSignature('${contract.id}', 'lender')">Löschen</button>
+                        </div>
+                        <div class="signature-box">
+                            <div class="signature-title">Unterschrift Darlehensnehmer</div>
+                            <div class="signature-canvas-wrapper">
+                                <canvas id="canvas-borrower-${contract.id}" data-blank="true"></canvas>
+                            </div>
+                            <button class="clear-sig-btn" onclick="clearSignature('${contract.id}', 'borrower')">Löschen</button>
+                        </div>
+                    </div>
+
+                    <!-- Live Meetings Tracking Table -->
+                    <h3 style="color: var(--primary); font-size: 16px; margin-bottom: 10px; border-left: 4px solid var(--accent); padding-left: 8px;">
+                        Live-Treffen & Abrechnungs-Protokoll
+                    </h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">
+                        Es wird abgerechnet, sobald ein Datum eingetragen wird. Eingehende Teilzahlungen mindern zuerst offene Zinsen und dann den Basisbetrag.
+                    </p>
+
+                    <div class="table-wrapper">
+                        <table class="live-table">
+                            <thead>
+                                <tr>
+                                    <th>Treffen</th>
+                                    <th>Datum</th>
+                                    <th>Wochentag</th>
+                                    <th>Zinsstufe</th>
+                                    <th>Zinszuwachs</th>
+                                    <th>Teilzahlung (€)</th>
+                                    <th>Gesamtschuld</th>
+                                    <th>Aktion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHtml}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Live Financial Summary Box (Blauer Streifen) -->
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <span class="summary-label">Aktueller Basisbetrag</span>
+                            <span class="summary-value" id="summary-base-${contract.id}">${formatCurrency(contract.currentBase)}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Offene Zinsen</span>
+                            <span class="summary-value" id="summary-interest-${contract.id}">${formatCurrency(contract.totalUnpaidInterest)}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Aktuelle Gesamtschuld</span>
+                            <span class="summary-value total-due" id="summary-total-${contract.id}">${formatCurrency(contract.currentBase + contract.totalUnpaidInterest)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            updateLiveSummary(contract); // Befüllt direkt die Vertragstabelle
+
+            setTimeout(() => {
+                initSignatureCanvas(contract.id, 'lender', contract.signatures.lender);
+                initSignatureCanvas(contract.id, 'borrower', contract.signatures.borrower);
+            }, 50);
+        }
+
+        function updateContractField(id, field, value) {
+            const contract = contracts.find(c => c.id === id);
+            if (!contract) return;
+
+            if (field === 'amount') {
+                contract.amount = parseFloat(value) || 0;
+            } else {
+                contract[field] = value;
+            }
+
+            if (field === 'borrower') {
+                renderTabs();
+            }
+
+            recalculateContract(contract);
+            saveToLocalStorage();
+            updateLiveSummary(contract);
+        }
+
+        function updateLiveSummary(contract) {
+            // Live-Texte im Vertrag updaten
+            const legalLender = document.getElementById(`legal-lender-${contract.id}`);
+            const legalBorrower = document.getElementById(`legal-borrower-${contract.id}`);
+            const legalAmount = document.getElementById(`legal-amount-${contract.id}`);
+            const legalLocation = document.getElementById(`legal-location-${contract.id}`);
+            const legalDate = document.getElementById(`legal-date-${contract.id}`);
+
+            if (legalLender) legalLender.innerText = contract.lender || '____________________';
+            if (legalBorrower) legalBorrower.innerText = contract.borrower || '____________________';
+            if (legalAmount) legalAmount.innerText = formatCurrency(contract.amount);
+            if (legalLocation) legalLocation.innerText = contract.location || '____________________';
+            if (legalDate) legalDate.innerText = contract.startDate ? formatDateDE(contract.startDate) : '_________';
+
+            // HTML der statischen Vertragstabelle (§ 3) generieren
+            const legalTableBody = document.querySelector(`#legal-table-${contract.id} tbody`);
+            if (legalTableBody) {
+                let legalRows = '';
+                contract.meetings.forEach(m => {
+                    if (m.date) { // Nur ausgefüllte Zeilen landen im Vertrag
+                        legalRows += `
+                            <tr>
+                                <td>${m.nr}</td>
+                                <td>${formatDateDE(m.date)}</td>
+                                <td>${formatCurrency(m.interest)}</td>
+                                <td style="color: green;">${m.payment > 0 ? formatCurrency(m.payment) : '-'}</td>
+                                <td>${formatCurrency(m.unpaidInterest)}</td>
+                                <td><strong>${formatCurrency(m.currentBase)}</strong></td>
+                                <td><strong>${formatCurrency(m.total)}</strong></td>
+                            </tr>
+                        `;
+                    }
+                });
+                legalTableBody.innerHTML = legalRows;
+            }
+
+            // Zellen in der unteren Live-Eingabetabelle updaten (ohne Focus-Verlust)
+            contract.meetings.forEach((m, idx) => {
+                const tr = document.querySelectorAll(`#contractsContainer .live-table tbody tr`)[idx];
+                if (tr) {
+                    const cellInterest = tr.querySelectorAll('td')[4];
+                    const cellTotal = tr.querySelectorAll('td')[6];
+                    if (cellInterest) cellInterest.innerText = formatCurrency(m.interest);
+                    if (cellTotal) cellTotal.innerText = formatCurrency(m.total);
+                }
+            });
+
+            // Update der Summary Box (Blauer Streifen unten)
+            const summaryBase = document.getElementById(`summary-base-${contract.id}`);
+            const summaryInterest = document.getElementById(`summary-interest-${contract.id}`);
+            const summaryTotal = document.getElementById(`summary-total-${contract.id}`);
+            
+            if (summaryBase) summaryBase.innerText = formatCurrency(contract.currentBase);
+            if (summaryInterest) summaryInterest.innerText = formatCurrency(contract.totalUnpaidInterest);
+            if (summaryTotal) summaryTotal.innerText = formatCurrency(contract.currentBase + contract.totalUnpaidInterest);
+        }
+
+        function updateMeetingDate(contractId, index, dateValue) {
+            const contract = contracts.find(c => c.id === contractId);
+            if (!contract) return;
+
+            const meeting = contract.meetings[index];
+            meeting.date = dateValue;
+
+            if (dateValue) {
+                const dateObj = new Date(dateValue);
+                meeting.weekday = WOCHENTAGE[dateObj.getDay()];
+            } else {
+                meeting.weekday = '';
+            }
+
+            // Wenn in die letzte Zeile ein Datum eingetragen wird, füge eine neue leere Zeile hinzu
+            if (index === contract.meetings.length - 1 && dateValue !== '') {
+                contract.meetings.push({
+                    nr: contract.meetings.length + 1,
+                    date: '',
+                    weekday: '',
+                    percent: 0,
+                    interest: 0,
+                    payment: 0,
+                    total: 0
+                });
+            }
+
+            recalculateContract(contract);
+            saveToLocalStorage();
+            renderContractWorkspace(); 
+        }
+
+        function updateMeetingPayment(contractId, index, paymentValue) {
+            const contract = contracts.find(c => c.id === contractId);
+            if (!contract) return;
+
+            contract.meetings[index].payment = parseFloat(paymentValue) || 0;
+            
+            recalculateContract(contract);
+            saveToLocalStorage();
+            updateLiveSummary(contract);
+        }
+
+        function deleteMeeting(contractId, index) {
+            const contract = contracts.find(c => c.id === contractId);
+            if (!contract) return;
+            
+            // Zeile entfernen
+            contract.meetings.splice(index, 1);
+            
+            // Nummerierung neu aufbauen
+            contract.meetings.forEach((m, idx) => m.nr = idx + 1);
+            
+            // Sicherstellen, dass am Ende mindestens eine leere Zeile steht
+            const lastMeeting = contract.meetings[contract.meetings.length - 1];
+            if (!lastMeeting || lastMeeting.date !== '') {
+                contract.meetings.push({
+                    nr: contract.meetings.length + 1,
+                    date: '',
+                    weekday: '',
+                    percent: 0,
+                    interest: 0,
+                    payment: 0,
+                    total: 0
+                });
+            }
+            
+            recalculateContract(contract);
+            saveToLocalStorage();
+            renderContractWorkspace(); // Hier rendern wir alles neu, da eine ganze DOM-Reihe verschwindet
+        }
+
+        function recalculateContract(contract) {
+            let currentBase = contract.amount || 0;
+            let totalUnpaidInterest = 0;
+
+            contract.meetings.forEach((m, idx) => {
+                let percent = 200; 
+                if (idx < ZINS_STUFEN.length) {
+                    percent = ZINS_STUFEN[idx].prozent;
+                }
+                
+                m.percent = percent;
+                m.payment = parseFloat(m.payment) || 0;
+
+                // Wurde das Treffen eingetragen? Dann fest verrechnen
+                if (m.date) {
+                    m.interest = (currentBase * percent) / 100;
+                    totalUnpaidInterest += m.interest;
+                    
+                    let paymentLeft = m.payment;
+                    
+                    // Verrechnungslogik: Zuerst Zinsen tilgen, dann Basisbetrag
+                    if (paymentLeft > 0) {
+                        if (paymentLeft >= totalUnpaidInterest) {
+                            paymentLeft -= totalUnpaidInterest;
+                            totalUnpaidInterest = 0;
+                            // Der Rest reduziert den Basisbetrag
+                            currentBase -= paymentLeft;
+                            if (currentBase < 0) currentBase = 0; // Verhindert negative Schulden
+                        } else {
+                            totalUnpaidInterest -= paymentLeft;
+                        }
+                    }
+                    
+                    m.currentBase = currentBase;
+                    m.unpaidInterest = totalUnpaidInterest;
+                } else {
+                    // "Vorschau" für die noch nicht ausgefüllte Zeile (wird nicht summiert)
+                    m.interest = (currentBase * percent) / 100;
+                    m.currentBase = currentBase; 
+                    m.unpaidInterest = totalUnpaidInterest + m.interest;
+                }
+
+                m.total = m.currentBase + m.unpaidInterest;
+            });
+
+            // Speichere die Endwerte direkt am Vertragsobjekt für den blauen Streifen
+            contract.currentBase = currentBase;
+            contract.totalUnpaidInterest = totalUnpaidInterest;
+        }
+
+        function initSignatureCanvas(contractId, type, existingImgData) {
+            const canvas = document.getElementById(`canvas-${type}-${contractId}`);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#0f172a';
+
+            if (existingImgData) {
+                const img = new Image();
+                img.src = existingImgData;
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+                canvas.setAttribute('data-blank', 'false');
+            }
+
+            let drawing = false;
+
+            function getPos(e) {
+                const r = canvas.getBoundingClientRect();
+                if (e.touches && e.touches.length > 0) {
+                    return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+                }
+                return { x: e.clientX - r.left, y: e.clientY - r.top };
+            }
+
+            function startDraw(e) {
+                drawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+                canvas.setAttribute('data-blank', 'false');
+            }
+
+            function draw(e) {
+                if (!drawing) return;
+                e.preventDefault();
+                const pos = getPos(e);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+
+            function stopDraw() {
+                if (drawing) {
+                    drawing = false;
+                    saveCurrentSignatures();
+                    saveToLocalStorage();
+                }
+            }
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            window.addEventListener('mouseup', stopDraw);
+
+            canvas.addEventListener('touchstart', startDraw);
+            canvas.addEventListener('touchmove', draw);
+            canvas.addEventListener('touchend', stopDraw);
+        }
+
+        function clearSignature(contractId, type) {
+            const canvas = document.getElementById(`canvas-${type}-${contractId}`);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.setAttribute('data-blank', 'true');
+
+            const contract = contracts.find(c => c.id === contractId);
+            if (contract) {
+                contract.signatures[type] = null;
+                saveToLocalStorage();
+            }
+        }
+
+        function formatCurrency(val) {
+            return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(val || 0);
+        }
+
+        function formatDateDE(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('de-DE');
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('zins_contracts_data', JSON.stringify(contracts));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('zins_contracts_data');
+            if (saved) {
+                try {
+                    contracts = JSON.parse(saved);
+                    if (contracts.length > 0 && !activeContractId) {
+                        activeContractId = contracts[0].id;
+                    }
+                } catch (e) {
+                    console.error("Error loading localStorage data", e);
+                    contracts = [];
+                }
+            }
+        }
+    </script>
+</body>
+</html>
